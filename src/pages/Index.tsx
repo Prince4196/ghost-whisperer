@@ -23,8 +23,8 @@ const Index = () => {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold font-mono">
-            <span className="text-primary glow-text">GHOST://</span>
-            <span className="text-foreground">PROJECT</span>
+            <span className="text-primary glow-text mr-2">GHOST</span>
+            <span className="text-primary glow-text">PROJECT</span>
           </h1>
 
           <div className="max-w-2xl mx-auto">
@@ -43,9 +43,11 @@ const Index = () => {
                 ENTER_VAULT
               </Link>
             </Button>
-            <Button variant="terminal" size="xl">
-              <Zap className="mr-2 h-5 w-5" />
-              GHOST_A_PROJECT
+            <Button variant="terminal" size="xl" asChild>
+              <Link to="/ghost-submission">
+                <Zap className="mr-2 h-5 w-5" />
+                GHOST_A_PROJECT
+              </Link>
             </Button>
           </div>
         </section>

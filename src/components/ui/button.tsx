@@ -24,7 +24,7 @@ const buttonVariants = cva(
         terminal:
           "bg-ghost-darker border border-ghost-border text-primary font-mono hover:bg-ghost-surface hover:shadow-[0_0_20px_hsl(120_100%_50%_/_0.4)] active:scale-95",
         haunt:
-          "bg-primary text-primary-foreground font-bold uppercase tracking-wider hover:shadow-[0_0_30px_hsl(120_100%_50%_/_0.6)] animate-glow-pulse",
+          "bg-primary text-primary-foreground font-bold uppercase tracking-wider hover:shadow-[0_0_30px_hsl(120_100%_50%_/_0.6)]",
         danger:
           "bg-transparent border border-destructive text-destructive hover:bg-destructive/10",
       },
