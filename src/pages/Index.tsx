@@ -38,7 +38,7 @@ const Index = () => {
 
           <div className="flex justify-center gap-4 pt-4">
             <Button variant="haunt" size="xl" asChild>
-              <Link to="/vault">
+              <Link to="/ghost-vault">
                 <Ghost className="mr-2 h-5 w-5" />
                 ENTER_VAULT
               </Link>

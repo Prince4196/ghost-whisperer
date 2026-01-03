@@ -1,125 +1,135 @@
-import { Ghost, Clock, GitBranch, Star, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { HealthBar } from '@/components/HealthBar';
-import { getGhostAge, getTimeUntilExpiry } from '@/lib/healthScore';
-import type { Project } from '@/lib/mockData';
-import { cn } from '@/lib/utils';
+import { Ghost } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface ProjectCardProps {
-  project: Project;
+  project: {
+    id: string;
+    title: string;
+    githubUrl?: string;
+    ghostLog?: string;
+    description?: string;
+    ghostName?: string;
+    creatorGhostName?: string;
+    healthScore?: {
+      total?: number;
+      documentation?: number;
+      structure?: number;
+      freshness?: number;
+      stability?: number;
+    } | number;
+    vitalityScore?: number;
+    status: string;
+    creator?: string;
+    creatorEmail?: string;
+    creatorRealName?: string;
+    timestamp?: Date;
+    expiryDate?: Date;
+    createdAt?: Date;
+    lastCheckIn?: Date;
+    deadManSwitchMonths?: number;
+    repoInfo?: {
+      owner?: string;
+      name?: string;
+      description?: string;
+      stars?: number;
+      forks?: number;
+      language?: string;
+    };
+  };
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
-  const isExpired = project.status === 'expired';
-  const timeLeft = getTimeUntilExpiry(project.expiryDate);
-  const ghostAge = getGhostAge(project.createdAt);
+export const ProjectCard = ({ project }: ProjectCardProps) => {
+  // Determine badge color based on status
+  const getStatusColor = () => {
+    switch (project.status) {
+      case 'Seeking Successors':
+        return 'bg-destructive/20 text-destructive border-destructive';
+      case 'Active':
+        return 'bg-primary/20 text-primary border-primary';
+      case 'Progress Report':
+        return 'bg-success/20 text-success border-success';
+      default:
+        return 'bg-muted text-foreground border-muted';
+    }
+  };
 
+  const getScoreValue = () => {
+    if (project.vitalityScore !== undefined) {
+      return project.vitalityScore;
+    }
+    
+    if (typeof project.healthScore === 'number') {
+      return project.healthScore;
+    }
+    
+    if (project.healthScore && typeof project.healthScore === 'object' && 'total' in project.healthScore) {
+      return project.healthScore.total || 0;
+    }
+    
+    return 0;
+  };
+  
   return (
-    <Card 
-      variant="terminal" 
-      className={cn(
-        "relative overflow-hidden group",
-        isExpired && "border-destructive/50"
-      )}
-    >
-      {/* Scanline overlay */}
-      <div className="absolute inset-0 scanlines pointer-events-none" />
-      
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between gap-2">
-          <div className="space-y-1 flex-1 min-w-0">
-            <CardTitle className="text-primary font-mono text-lg truncate group-hover:glow-text transition-all">
-              {project.title}
-            </CardTitle>
-            <CardDescription className="text-muted-foreground line-clamp-2 text-xs">
-              {project.description}
-            </CardDescription>
-          </div>
-          <Badge variant="generation" className="shrink-0">
-            Gen {project.generation}
+    <Link to={`/project/${project.id}`} className="block">
+      <Card variant="terminal" className="p-4 group hover:shadow-[0_0_20px_hsl(120_100%_50%_/_0.4)] transition-all cursor-pointer">
+        <div className="flex justify-between items-start mb-3">
+          <h3 className="font-mono font-bold text-primary text-lg truncate">
+            {project.title}
+          </h3>
+          <Badge 
+            variant="outline" 
+            className={`${getStatusColor()} uppercase text-xs px-2 py-1 font-mono`}
+          >
+            {project.status}
           </Badge>
         </div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        {/* Health Score */}
-        <HealthBar score={project.healthScore.total} />
-
-        {/* Metadata */}
-        <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Ghost className="h-3 w-3" />
-            <span className="truncate">{project.ghostName}</span>
+        
+        <p className="text-muted-foreground font-mono text-sm mb-4 line-clamp-2">
+          {project.repoInfo?.description || project.description}
+        </p>
+        
+        <div className="mb-4">
+          <div className="flex justify-between text-xs font-mono text-muted-foreground mb-1">
+            <span>VITALITY: {getScoreValue()}%</span>
+            <span>{project.repoInfo?.stars} STARS</span>
           </div>
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Star className="h-3 w-3" />
-            <span>{project.stars} stars</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Clock className="h-3 w-3" />
-            <span>{ghostAge}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <GitBranch className="h-3 w-3" />
-            <span>{project.haunters.length} haunters</span>
-          </div>
+          <HealthBar score={getScoreValue()} showLabel={false} size="sm" />
         </div>
-
-        {/* Languages */}
-        <div className="flex flex-wrap gap-1">
-          {project.languages.map((lang) => (
-            <Badge key={lang} variant="ghost" className="text-[10px]">
-              {lang}
+        
+        <div className="flex flex-wrap gap-1 mb-4">
+          {project.repoInfo?.language && (
+            <Badge 
+              variant="outline" 
+              className="text-xs font-mono border-ghost-border text-muted-foreground"
+            >
+              {project.repoInfo.language}
             </Badge>
-          ))}
-        </div>
-
-        {/* Timer */}
-        <div className={cn(
-          "flex items-center justify-between p-2 rounded-sm border text-xs font-mono",
-          isExpired 
-            ? "border-destructive/50 bg-destructive/10 text-destructive" 
-            : "border-ghost-border bg-ghost-darker text-muted-foreground"
-        )}>
-          <span>DEAD_MANS_SWITCH:</span>
-          <span className={cn(
-            "font-bold",
-            isExpired ? "text-destructive" : "text-primary"
-          )}>
-            {timeLeft}
-          </span>
-        </div>
-      </CardContent>
-
-      <CardFooter className="gap-2">
-        <Button
-          variant={isExpired ? "haunt" : "terminal"}
-          size="sm"
-          className="flex-1"
-          disabled={!isExpired}
-          asChild={isExpired}
-        >
-          {isExpired ? (
-            <Link to={`/project/${project.id}`}>
-              <Ghost className="h-4 w-4 mr-1" />
-              HAUNT
-            </Link>
-          ) : (
-            <>
-              <Clock className="h-4 w-4 mr-1" />
-              LOCKED
-            </>
           )}
-        </Button>
-        <Button variant="outline" size="sm" asChild>
-          <Link to={`/project/${project.id}`}>
-            <ExternalLink className="h-4 w-4" />
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+        </div>
+        
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Ghost className="h-4 w-4 text-ghost-green-dim" />
+            <span className="text-xs font-mono text-ghost-green-dim truncate">
+              {project.creatorRealName || project.creator || project.creatorGhostName || project.ghostName}
+            </span>
+          </div>
+          
+          {project.status === 'Seeking Successors' && (
+            <Button 
+              variant="terminal" 
+              size="sm" 
+              className="text-xs font-mono"
+            >
+              VIEW_PROJECT
+            </Button>
+          )}
+        </div>
+      </Card>
+    </Link>
   );
-}
+};

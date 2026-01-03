@@ -9,7 +9,7 @@ export interface Project {
   ghostName: string;
   repoUrl: string;
   healthScore: ReturnType<typeof calculateProjectHealth>;
-  status: 'available' | 'haunted' | 'expired';
+  status: 'available' | 'haunted' | 'expired' | 'Seeking Successors' | 'Active' | 'Progress Report';
   parentId: string | null;
   generation: number;
   expiryDate: Date;
@@ -37,7 +37,7 @@ function createMockProject(
   overrides: Partial<Project> = {}
 ): Project {
   const ghostId = `ghost-${id}`;
-  const ghostName = generateGhostName(ghostId);
+  const ghostName = generateGhostName();
   
   const fullRepoData: RepoData = {
     hasReadme: true,
@@ -78,7 +78,7 @@ function createMockProject(
   };
 }
 
-export const mockProjects: Project[] = [
+const originalMockProjects: Project[] = [
   createMockProject(
     '1',
     'NeuralNote',
@@ -91,7 +91,7 @@ export const mockProjects: Project[] = [
     'CampusConnect',
     'Real-time study group finder and scheduling platform',
     { hasReadme: true, readmeWordCount: 320, lastCommitDate: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) },
-    { languages: ['JavaScript', 'Node.js'], stars: 28, generation: 2, haunters: [{ ghostName: generateGhostName('prev-1'), hauntedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }] }
+    { languages: ['JavaScript', 'Node.js'], stars: 28, generation: 2, haunters: [{ ghostName: generateGhostName(), hauntedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }] }
   ),
   createMockProject(
     '3',
@@ -113,8 +113,8 @@ export const mockProjects: Project[] = [
     'Real-time lecture transcription with markdown export',
     { hasReadme: true, readmeWordCount: 450, hasTestsFolder: true },
     { languages: ['TypeScript'], stars: 35, generation: 3, haunters: [
-      { ghostName: generateGhostName('prev-2'), hauntedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000) },
-      { ghostName: generateGhostName('prev-3'), hauntedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
+      { ghostName: generateGhostName(), hauntedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000) },
+      { ghostName: generateGhostName(), hauntedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
     ]}
   ),
   createMockProject(
@@ -139,6 +139,48 @@ export const mockProjects: Project[] = [
     { languages: ['Python'], stars: 8, status: 'expired' }
   ),
 ];
+
+// Add new dummy projects with the requested status types
+const newMockProjects: Project[] = [
+  createMockProject(
+    '9',
+    'Smart Traffic AI',
+    'AI-powered traffic management system using computer vision',
+    { hasReadme: true, readmeWordCount: 750, hasTestsFolder: true, hasGithubWorkflows: true },
+    { status: 'Seeking Successors', languages: ['Python', 'TensorFlow'], stars: 45, ghostName: generateGhostName() }
+  ),
+  createMockProject(
+    '10',
+    'Drone Medic',
+    'Autonomous medical supply delivery drone system',
+    { hasReadme: true, readmeWordCount: 1200, hasTestsFolder: true },
+    { status: 'Active', languages: ['C++', 'ROS'], stars: 78, ghostName: generateGhostName() }
+  ),
+  createMockProject(
+    '11',
+    'Blockchain Voting',
+    'Secure and transparent voting system using blockchain technology',
+    { hasReadme: true, readmeWordCount: 950, hasTestsFolder: true, hasGithubWorkflows: true },
+    { status: 'Progress Report', languages: ['Solidity', 'React'], stars: 120, ghostName: generateGhostName() }
+  ),
+  createMockProject(
+    '12',
+    'Campus Energy Monitor',
+    'IoT system to monitor and optimize energy consumption in dorms',
+    { hasReadme: true, readmeWordCount: 600, hasTestsFolder: true },
+    { status: 'Seeking Successors', languages: ['Python', 'Node.js'], stars: 25, ghostName: generateGhostName() }
+  ),
+  createMockProject(
+    '13',
+    'Study Group AI',
+    'AI-powered system to form optimal study groups based on learning styles',
+    { hasReadme: true, readmeWordCount: 800, hasTestsFolder: true, hasGithubWorkflows: true },
+    { status: 'Active', languages: ['JavaScript', 'TensorFlow.js'], stars: 65, ghostName: generateGhostName() }
+  ),
+];
+
+// Combine the original projects with new ones
+export const mockProjects: Project[] = [...originalMockProjects, ...newMockProjects];
 
 export const platformStats = {
   projectsResurrected: 43,

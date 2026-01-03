@@ -47,8 +47,8 @@ const GhostSubmission = () => {
           description: result.message,
           duration: 5000,
         });
-        // Redirect to success page or vault
-        navigate('/vault');
+        // Redirect to vault with a refresh flag to force data reload
+        navigate('/vault?refresh=true');
       } else {
         setError(result.message);
       }
@@ -142,7 +142,7 @@ const GhostSubmission = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    SCANNING_REPOSITORY...
+                    SCANNING_DIGITAL_REMAINS...
                   </>
                 ) : (
                   'GHOST_PROJECT'

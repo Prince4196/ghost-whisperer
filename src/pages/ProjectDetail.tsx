@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Ghost, Clock, Star, GitBranch, ExternalLink, FileText, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Ghost, Clock, Star, GitBranch, ExternalLink, FileText, AlertTriangle, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,14 +8,51 @@ import { HealthBar } from '@/components/HealthBar';
 import { LineageTree } from '@/components/LineageTree';
 import { TerminalHeader } from '@/components/TerminalHeader';
 import { GhostParticles } from '@/components/GhostParticles';
-import { mockProjects } from '@/lib/mockData';
+import { doc, getDoc, addDoc, collection } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
+import { getCurrentUserRealName, getCurrentUserEmail } from '@/lib/authService';
 import { getGhostAge, getTimeUntilExpiry, getHealthColor } from '@/lib/healthScore';
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const project = mockProjects.find(p => p.id === id);
+  const [project, setProject] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  if (!project) {
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        if (!id) return;
+        
+        const projectDocRef = doc(db, 'projects', id);
+        const projectDoc = await getDoc(projectDocRef);
+        
+        if (projectDoc.exists()) {
+          const data = projectDoc.data();
+          setProject({
+            id: projectDoc.id,
+            ...data,
+            createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
+            expiryDate: data.expiryDate?.toDate ? data.expiryDate.toDate() : new Date(),
+            lastCheckIn: data.lastCheckIn?.toDate ? data.lastCheckIn.toDate() : new Date(),
+          });
+        } else {
+          setError('Project not found');
+        }
+      } catch (err) {
+        console.error('Error fetching project:', err);
+        setError('Failed to load project');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchProject();
+  }, [id]);
+
+  if (error) {
     return (
       <div className="min-h-screen bg-background">
         <TerminalHeader />
@@ -22,7 +60,7 @@ const ProjectDetail = () => {
           <Ghost className="h-20 w-20 text-ghost-green-dim mx-auto mb-4 animate-float" />
           <h1 className="text-2xl font-mono text-primary mb-2">PROJECT_NOT_FOUND</h1>
           <p className="text-muted-foreground font-mono text-sm mb-6">
-            This ghost has vanished into the void...
+            {error}
           </p>
           <Button variant="terminal" asChild>
             <Link to="/vault">
@@ -35,10 +73,82 @@ const ProjectDetail = () => {
     );
   }
 
-  const isExpired = project.status === 'expired';
+  if (loading || !project) {
+    return (
+      <div className="min-h-screen bg-background">
+        <TerminalHeader />
+        <div className="container py-16 text-center">
+          <div className="flex flex-col items-center">
+            <Ghost className="h-20 w-20 text-ghost-green-dim mx-auto mb-4 animate-pulse" />
+            <h1 className="text-2xl font-mono text-primary mb-2">LOADING_PROJECT...</h1>
+            <p className="text-muted-foreground font-mono text-sm">Scanning the ghost vault</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isExpired = new Date() > project.expiryDate;
   const timeLeft = getTimeUntilExpiry(project.expiryDate);
   const ghostAge = getGhostAge(project.createdAt);
-  const healthColor = getHealthColor(project.healthScore.total);
+  const healthColor = getHealthColor(project.vitalityScore || project.healthScore?.total || 0);
+  
+  const [showInterestForm, setShowInterestForm] = useState(false);
+  const [interestAnswers, setInterestAnswers] = useState({
+    reason: '',
+    experience: '',
+    portfolio: ''
+  });
+  
+  const handleInterestSubmit = async () => {
+    try {
+      const juniorName = await getCurrentUserRealName();
+      const juniorEmail = await getCurrentUserEmail();
+      
+      if (!juniorName || !juniorEmail) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to submit interest in this project",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Create application in the applications collection
+      const applicationData = {
+        projectId: id,
+        projectName: project.title,
+        seniorName: project.creator,
+        seniorEmail: project.creatorEmail,
+        juniorName,
+        juniorEmail,
+        reason: interestAnswers.reason,
+        skills: interestAnswers.experience,
+        portfolio: interestAnswers.portfolio,
+        status: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      
+      await addDoc(collection(db, 'applications'), applicationData);
+      
+      toast({
+        title: "Interest Submitted!",
+        description: "Your interest application has been submitted to the project senior.",
+      });
+      
+      // Reset form and close it
+      setInterestAnswers({ reason: '', experience: '', portfolio: '' });
+      setShowInterestForm(false);
+    } catch (err) {
+      console.error('Error submitting interest:', err);
+      toast({
+        title: "Error",
+        description: "Failed to submit interest application",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -74,24 +184,60 @@ const ProjectDetail = () => {
                   </p>
                 </div>
 
-                {isExpired ? (
-                  <Button variant="haunt" size="lg">
-                    <Ghost className="mr-2 h-5 w-5" />
-                    HAUNT_THIS_PROJECT
+                {!showInterestForm ? (
+                  <Button variant="haunt" size="lg" onClick={() => setShowInterestForm(true)}>
+                    <User className="mr-2 h-5 w-5" />
+                    EXPRESSION_OF_INTEREST
                   </Button>
                 ) : (
-                  <Button variant="terminal" size="lg" disabled>
-                    <Clock className="mr-2 h-5 w-5" />
-                    SWITCH_ACTIVE
-                  </Button>
+                  <div className="space-y-3 w-full max-w-md">
+                    <div>
+                      <label className="text-xs font-mono text-muted-foreground mb-1 block">Why do you want to work on this project?</label>
+                      <textarea
+                        value={interestAnswers.reason}
+                        onChange={(e) => setInterestAnswers({...interestAnswers, reason: e.target.value})}
+                        className="w-full p-2 bg-ghost-darker border border-ghost-border rounded-sm text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                        rows={3}
+                        placeholder="Explain your interest..."
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-mono text-muted-foreground mb-1 block">What are your key skills (Tech Stack)?</label>
+                      <input
+                        type="text"
+                        value={interestAnswers.experience}
+                        onChange={(e) => setInterestAnswers({...interestAnswers, experience: e.target.value})}
+                        className="w-full p-2 bg-ghost-darker border border-ghost-border rounded-sm text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                        placeholder="React, Node, Python..."
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-mono text-muted-foreground mb-1 block">Provide your LinkedIn or Portfolio link</label>
+                      <input
+                        type="text"
+                        value={interestAnswers.portfolio}
+                        onChange={(e) => setInterestAnswers({...interestAnswers, portfolio: e.target.value})}
+                        className="w-full p-2 bg-ghost-darker border border-ghost-border rounded-sm text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                        placeholder="https://..."
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setShowInterestForm(false)}>
+                        CANCEL
+                      </Button>
+                      <Button variant="default" size="sm" onClick={handleInterestSubmit}>
+                        SUBMIT_APPLICATION
+                      </Button>
+                    </div>
+                  </div>
                 )}
               </div>
 
               {/* Metadata Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm font-mono">
                 <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">GHOST</span>
-                  <p className="text-primary truncate">{project.ghostName}</p>
+                  <span className="text-xs text-muted-foreground">SENIOR</span>
+                  <p className="text-primary truncate">{project.creator}</p>
                 </div>
                 <div className="space-y-1">
                   <span className="text-xs text-muted-foreground">AGE</span>
@@ -101,14 +247,14 @@ const ProjectDetail = () => {
                   <span className="text-xs text-muted-foreground">STARS</span>
                   <p className="text-foreground flex items-center gap-1">
                     <Star className="h-3 w-3" />
-                    {project.stars}
+                    {project.repoInfo?.stars || project.stars || 0}
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">HAUNTERS</span>
+                  <span className="text-xs text-muted-foreground">INTERESTED</span>
                   <p className="text-foreground flex items-center gap-1">
-                    <GitBranch className="h-3 w-3" />
-                    {project.haunters.length}
+                    <User className="h-3 w-3" />
+                    {project.interested_juniors?.length || 0}
                   </p>
                 </div>
               </div>
@@ -125,13 +271,13 @@ const ProjectDetail = () => {
               {/* Repo Link */}
               <div className="mt-4 pt-4 border-t border-ghost-border">
                 <a
-                  href={project.repoUrl}
+                  href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm font-mono text-muted-foreground hover:text-primary transition-colors"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  {project.repoUrl}
+                  {project.githubUrl}
                 </a>
               </div>
             </Card>
@@ -144,38 +290,18 @@ const ProjectDetail = () => {
               </h2>
 
               <div className="space-y-4">
-                <HealthBar score={project.healthScore.total} size="lg" />
+                <HealthBar score={project.vitalityScore || project.healthScore?.total || 0} size="lg" />
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-                  {[
-                    { label: 'DOCS', value: project.healthScore.documentation, max: 35 },
-                    { label: 'STRUCTURE', value: project.healthScore.structure, max: 25 },
-                    { label: 'FRESHNESS', value: project.healthScore.freshness, max: 20 },
-                    { label: 'STABILITY', value: project.healthScore.stability, max: 20 },
-                  ].map((metric) => (
-                    <div key={metric.label} className="space-y-2">
-                      <div className="flex justify-between text-xs font-mono">
-                        <span className="text-muted-foreground">{metric.label}</span>
-                        <span className="text-foreground">{metric.value}/{metric.max}</span>
-                      </div>
-                      <div className="h-1.5 bg-ghost-darker rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary transition-all"
-                          style={{ width: `${(metric.value / metric.max) * 100}%` }}
-                        />
-                      </div>
+                <div className="text-center py-6">
+                  <div className="relative inline-flex items-center justify-center">
+                    <div className="absolute w-32 h-32 rounded-full border-4 border-ghost-green-dim/20"></div>
+                    <div className="absolute w-28 h-28 rounded-full border-4 border-ghost-green-dim/40"></div>
+                    <div className="absolute w-24 h-24 rounded-full border-4 border-ghost-green-dim/60"></div>
+                    <div className="text-3xl font-bold font-mono text-primary">
+                      {project.vitalityScore || project.healthScore?.total || 0}%
                     </div>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-ghost-border">
-                  <span className="text-sm font-mono text-muted-foreground">STATUS:</span>
-                  <Badge 
-                    variant="health" 
-                    style={{ borderColor: healthColor, color: healthColor }}
-                  >
-                    {project.healthScore.status.toUpperCase()}
-                  </Badge>
+                  </div>
+                  <p className="text-sm font-mono text-muted-foreground mt-2">VITALITY PULSE</p>
                 </div>
               </div>
             </Card>
@@ -190,7 +316,7 @@ const ProjectDetail = () => {
               <div className="bg-ghost-darker border border-ghost-border rounded-sm p-4">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3 pb-3 border-b border-ghost-border">
                   <Ghost className="h-3 w-3" />
-                  <span>Final transmission from {project.ghostName}</span>
+                  <span>Project Notes from {project.creator}</span>
                 </div>
                 <p className="text-sm font-mono text-foreground whitespace-pre-wrap">
                   {project.ghostLog}
