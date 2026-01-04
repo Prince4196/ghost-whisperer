@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { HealthBar } from '@/components/HealthBar';
-import { Ghost } from 'lucide-react';
+import { Radio } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ProjectCardProps {
@@ -57,6 +57,19 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
     }
   };
 
+  const getStatusLabel = () => {
+    switch (project.status) {
+      case 'Seeking Successors':
+        return 'DEMOGORGON';
+      case 'Active':
+        return 'ACTIVE';
+      case 'Progress Report':
+        return 'RESCUED';
+      default:
+        return project.status;
+    }
+  };
+
   const getScoreValue = () => {
     if (project.vitalityScore !== undefined) {
       return project.vitalityScore;
@@ -75,16 +88,16 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
   
   return (
     <Link to={`/project/${project.id}`} className="block">
-      <Card variant="terminal" className="p-4 group hover:shadow-[0_0_20px_hsl(120_100%_50%_/_0.4)] transition-all cursor-pointer">
+      <Card variant="terminal" className="p-4 group hover:shadow-[0_0_20px_hsl(0_85%_52%_/_0.4)] transition-all cursor-pointer">
         <div className="flex justify-between items-start mb-3">
-          <h3 className="font-mono font-bold text-primary text-lg truncate">
+          <h3 className="font-stranger font-bold text-primary text-lg truncate">
             {project.title}
           </h3>
           <Badge 
             variant="outline" 
             className={`${getStatusColor()} uppercase text-xs px-2 py-1 font-mono`}
           >
-            {project.status}
+            {getStatusLabel()}
           </Badge>
         </div>
         
@@ -94,7 +107,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
         
         <div className="mb-4">
           <div className="flex justify-between text-xs font-mono text-muted-foreground mb-1">
-            <span>VITALITY: {getScoreValue()}%</span>
+            <span>POWER: {getScoreValue()}%</span>
             <span>{project.repoInfo?.stars} STARS</span>
           </div>
           <HealthBar score={getScoreValue()} showLabel={false} size="sm" />
@@ -113,7 +126,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
         
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Ghost className="h-4 w-4 text-ghost-green-dim" />
+            <Radio className="h-4 w-4 text-ghost-green-dim" />
             <span className="text-xs font-mono text-ghost-green-dim truncate">
               {project.creatorRealName || project.creator || project.creatorGhostName || project.ghostName}
             </span>
@@ -125,7 +138,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
               size="sm" 
               className="text-xs font-mono"
             >
-              VIEW_PROJECT
+              OPEN_GATE
             </Button>
           )}
         </div>

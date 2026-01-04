@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TerminalHeader } from '@/components/TerminalHeader';
-import { GhostParticles } from '@/components/GhostParticles';
+import { AshParticles } from '@/components/AshParticles';
 import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
@@ -40,7 +40,7 @@ const SeniorDashboard = () => {
         if (!seniorEmail) {
           toast({
             title: "Authentication Required",
-            description: "Please log in to access your dashboard",
+            description: "Please log in to access The Party HQ",
             variant: "destructive",
           });
           return;
@@ -78,7 +78,7 @@ const SeniorDashboard = () => {
         console.error('Error fetching applications:', err);
         toast({
           title: "Error",
-          description: "Failed to load applications",
+          description: "The Mind Flayer blocked your request",
           variant: "destructive",
         });
       } finally {
@@ -103,14 +103,14 @@ const SeniorDashboard = () => {
       ));
 
       toast({
-        title: "Application Approved!",
-        description: "The junior will be notified and you can now connect with them.",
+        title: "Recruit Approved!",
+        description: "The new party member will be notified. Time to rescue some code!",
       });
     } catch (err) {
       console.error('Error approving application:', err);
       toast({
         title: "Error",
-        description: "Failed to approve application",
+        description: "Failed to approve recruit",
         variant: "destructive",
       });
     }
@@ -131,7 +131,7 @@ const SeniorDashboard = () => {
 
       toast({
         title: "Application Rejected",
-        description: "The junior will be notified of your decision.",
+        description: "The recruit will be notified of your decision.",
       });
     } catch (err) {
       console.error('Error rejecting application:', err);
@@ -162,17 +162,17 @@ const SeniorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background relative">
-      <GhostParticles />
+      <AshParticles />
       <TerminalHeader />
 
       <main className="container py-8 relative z-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold font-mono text-primary glow-text mb-2">
-            {'>'} SENIOR_DASHBOARD
+          <h1 className="text-3xl font-bold font-stranger text-primary glow-text mb-2">
+            {'>'} THE_PARTY_HQ
           </h1>
           <p className="text-muted-foreground font-mono text-sm">
-            Manage applications from juniors interested in your projects.
+            Manage recruits seeking to join your rescue missions.
           </p>
         </div>
 
@@ -187,9 +187,9 @@ const SeniorDashboard = () => {
                 onClick={() => setActiveTab(tab)}
                 className="uppercase text-xs"
               >
-                {tab === 'all' ? 'ALL_APPLICATIONS' : 
+                {tab === 'all' ? 'ALL_RECRUITS' : 
                  tab === 'pending' ? 'PENDING' : 
-                 tab === 'approved' ? 'APPROVED' : 
+                 tab === 'approved' ? 'PARTY_MEMBERS' : 
                  'REJECTED'}
                 <span className="ml-1">
                   ({applications.filter(a => tab === 'all' || a.status === tab).length})
@@ -205,7 +205,7 @@ const SeniorDashboard = () => {
             <div className="flex flex-col items-center">
               <Clock className="h-12 w-12 text-primary animate-spin mb-4" />
               <p className="text-muted-foreground font-mono text-lg">
-                LOADING_APPLICATIONS...
+                SCANNING_FOR_RECRUITS...
               </p>
             </div>
           </Card>
@@ -215,11 +215,11 @@ const SeniorDashboard = () => {
               <Card key={application.id} variant="terminal" className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="font-mono font-bold text-primary text-lg">
+                    <h3 className="font-stranger font-bold text-primary text-lg">
                       {application.projectName}
                     </h3>
                     <p className="text-sm text-muted-foreground font-mono">
-                      Application from: {application.juniorName}
+                      Recruit: {application.juniorName}
                     </p>
                   </div>
                   <Badge 
@@ -232,13 +232,13 @@ const SeniorDashboard = () => {
 
                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <h4 className="text-xs font-mono text-muted-foreground mb-1">WHY INTERESTED</h4>
+                    <h4 className="text-xs font-mono text-muted-foreground mb-1">MISSION_MOTIVATION</h4>
                     <p className="text-sm font-mono text-foreground">
                       {application.reason}
                     </p>
                   </div>
                   <div>
-                    <h4 className="text-xs font-mono text-muted-foreground mb-1">SKILLS</h4>
+                    <h4 className="text-xs font-mono text-muted-foreground mb-1">SURVIVAL_KIT</h4>
                     <p className="text-sm font-mono text-foreground">
                       {application.skills || application.experience}
                     </p>
@@ -286,7 +286,7 @@ const SeniorDashboard = () => {
                         className="text-xs font-mono"
                       >
                         <Mail className="h-3 w-3 mr-1" />
-                        APPROVE & CONNECT
+                        JOIN_THE_PARTY
                       </Button>
                     </div>
                   )}
@@ -298,7 +298,7 @@ const SeniorDashboard = () => {
                       className="text-xs font-mono"
                     >
                       <MessageCircle className="h-3 w-3 mr-1" />
-                      CONNECT_NOW
+                      WALKIE_TALKIE
                     </Button>
                   )}
                 </div>
@@ -309,13 +309,22 @@ const SeniorDashboard = () => {
           <Card variant="terminal" className="p-12 text-center">
             <User className="h-16 w-16 text-ghost-green-dim mx-auto mb-4 animate-float" />
             <p className="text-muted-foreground font-mono">
-              NO_APPLICATIONS_YET
+              NO_RECRUITS_YET
             </p>
             <p className="text-xs text-ghost-green-dim font-mono mt-2">
-              When juniors express interest in your projects, they will appear here.
+              When someone wants to join The Party, they will appear here.
             </p>
           </Card>
         )}
+
+        {/* Footer */}
+        <footer className="py-8 border-t border-ghost-border mt-12">
+          <div className="text-center">
+            <p className="text-lg font-stranger text-muted-foreground italic">
+              "Friends don't lie."
+            </p>
+          </div>
+        </footer>
       </main>
     </div>
   );

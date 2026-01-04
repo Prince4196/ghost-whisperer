@@ -22,6 +22,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/vault" element={<GhostVault />} />
           <Route path="/ghost-vault" element={<GhostVault />} />
           <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/ghost-submission" element={

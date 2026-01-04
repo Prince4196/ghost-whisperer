@@ -10,11 +10,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90 hover:shadow-[0_0_20px_hsl(120_100%_50%_/_0.5)]",
+          "bg-primary text-primary-foreground shadow hover:bg-primary/90 hover:shadow-[0_0_20px_hsl(0_85%_52%_/_0.5)]",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-ghost-border bg-transparent text-primary shadow-sm hover:bg-ghost-surface hover:shadow-[0_0_15px_hsl(120_100%_50%_/_0.3)]",
+          "border border-ghost-border bg-transparent text-primary shadow-sm hover:bg-ghost-surface hover:shadow-[0_0_15px_hsl(0_85%_52%_/_0.3)]",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost:
@@ -22,9 +22,9 @@ const buttonVariants = cva(
         link:
           "text-primary underline-offset-4 hover:underline",
         terminal:
-          "bg-ghost-darker border border-ghost-border text-primary font-mono hover:bg-ghost-surface hover:shadow-[0_0_20px_hsl(120_100%_50%_/_0.4)] active:scale-95",
+          "bg-ghost-darker border border-ghost-border text-primary font-mono hover:bg-ghost-surface hover:shadow-[0_0_20px_hsl(0_85%_52%_/_0.4)] active:scale-95",
         haunt:
-          "bg-primary text-primary-foreground font-bold uppercase tracking-wider hover:shadow-[0_0_30px_hsl(120_100%_50%_/_0.6)]",
+          "bg-primary text-primary-foreground font-bold uppercase tracking-wider hover:shadow-[0_0_30px_hsl(0_85%_52%_/_0.6)] font-stranger",
         danger:
           "bg-transparent border border-destructive text-destructive hover:bg-destructive/10",
       },
