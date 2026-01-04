@@ -15,6 +15,7 @@ export default {
     extend: {
       fontFamily: {
         mono: ["'JetBrains Mono'", "monospace"],
+        stranger: ["'Special Elite'", "cursive"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -50,6 +51,7 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: "hsl(var(--success))",
         ghost: {
           green: "hsl(var(--ghost-green))",
           "green-dim": "hsl(var(--ghost-green-dim))",
@@ -57,6 +59,17 @@ export default {
           darker: "hsl(var(--ghost-darker))",
           surface: "hsl(var(--ghost-surface))",
           border: "hsl(var(--ghost-border))",
+        },
+        stranger: {
+          red: "hsl(var(--stranger-red))",
+          "red-dim": "hsl(var(--stranger-red-dim))",
+          dark: "hsl(var(--stranger-dark))",
+          darker: "hsl(var(--stranger-darker))",
+          surface: "hsl(var(--stranger-surface))",
+          border: "hsl(var(--stranger-border))",
+        },
+        eleven: {
+          blue: "hsl(var(--eleven-blue))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -85,14 +98,18 @@ export default {
         },
         "flicker": {
           "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.8" },
+          "8%, 12%": { opacity: "0.8" },
+          "10%": { opacity: "0.4" },
+          "50%": { opacity: "1" },
+          "52%, 54%": { opacity: "0.9" },
+          "53%": { opacity: "0.6" },
         },
         "glow-pulse": {
           "0%, 100%": { 
-            boxShadow: "0 0 5px hsl(120 100% 50% / 0.5), 0 0 10px hsl(120 100% 50% / 0.3)",
+            boxShadow: "0 0 5px hsl(0 85% 52% / 0.5), 0 0 10px hsl(0 85% 52% / 0.3)",
           },
           "50%": { 
-            boxShadow: "0 0 20px hsl(120 100% 50% / 0.8), 0 0 40px hsl(120 100% 50% / 0.5)",
+            boxShadow: "0 0 20px hsl(0 85% 52% / 0.8), 0 0 40px hsl(0 85% 52% / 0.5)",
           },
         },
         "float": {
@@ -103,6 +120,13 @@ export default {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(100%)" },
         },
+        "vhs-glitch": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "10%": { transform: "translateX(-2px)" },
+          "20%": { transform: "translateX(2px)" },
+          "30%": { transform: "translateX(-1px)" },
+          "40%": { transform: "translateX(1px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -111,6 +135,7 @@ export default {
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "float": "float 3s ease-in-out infinite",
         "scan": "scan 2s linear infinite",
+        "vhs-glitch": "vhs-glitch 0.5s ease-in-out infinite",
       },
     },
   },

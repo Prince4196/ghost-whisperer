@@ -11,7 +11,8 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { TerminalHeader } from '@/components/TerminalHeader';
-import { Ghost, Loader2 } from 'lucide-react';
+import { AshParticles } from '@/components/AshParticles';
+import { Radio, Loader2 } from 'lucide-react';
 import { submitProject } from '@/lib/projectService';
 import { useToast } from '@/hooks/use-toast';
 
@@ -43,7 +44,7 @@ const GhostSubmission = () => {
       
       if (result.success) {
         toast({
-          title: 'Project Ghosted Successfully!',
+          title: 'Project Sent to the Void!',
           description: result.message,
           duration: 5000,
         });
@@ -54,7 +55,7 @@ const GhostSubmission = () => {
       }
     } catch (err) {
       console.error('Error submitting project:', err);
-      setError('Failed to submit project. Please try again.');
+      setError('Failed to open the Gate. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -62,17 +63,18 @@ const GhostSubmission = () => {
 
   return (
     <div className="min-h-screen bg-background relative">
+      <AshParticles />
       <TerminalHeader />
       
       <main className="container py-8 relative z-10">
         <Card variant="terminal" className="max-w-2xl mx-auto">
           <CardHeader>
             <div className="flex items-center gap-3 mb-4">
-              <Ghost className="h-8 w-8 text-primary" />
-              <CardTitle className="text-2xl font-mono">GHOST_A_PROJECT</CardTitle>
+              <Radio className="h-8 w-8 text-primary neon-drop-shadow" />
+              <CardTitle className="text-2xl font-stranger">ENTER_THE_VOID</CardTitle>
             </div>
             <CardDescription className="font-mono text-muted-foreground">
-              Submit your project to the vault. Set a Dead Man's Switch timer to keep it alive.
+              Send your project to the Upside Down. Set a Dead Man's Switch to keep the signal alive.
             </CardDescription>
           </CardHeader>
           
@@ -85,10 +87,10 @@ const GhostSubmission = () => {
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="font-mono text-sm text-primary">PROJECT_TITLE</label>
+                <label className="font-mono text-sm text-primary">PROJECT_CODENAME</label>
                 <Input
                   type="text"
-                  placeholder="Enter project title"
+                  placeholder="Enter project codename"
                   value={projectTitle}
                   onChange={(e) => setProjectTitle(e.target.value)}
                   className="bg-ghost-darker border-ghost-border font-mono text-primary"
@@ -97,7 +99,7 @@ const GhostSubmission = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="font-mono text-sm text-primary">GITHUB_REPOSITORY_URL</label>
+                <label className="font-mono text-sm text-primary">GITHUB_COORDINATES</label>
                 <Input
                   type="url"
                   placeholder="https://github.com/username/repository"
@@ -109,9 +111,9 @@ const GhostSubmission = () => {
               </div>
               
               <div className="space-y-2">
-                <label className="font-mono text-sm text-primary">GHOST_LOG</label>
+                <label className="font-mono text-sm text-primary">SURVIVAL_LOG</label>
                 <Textarea
-                  placeholder="Leave handover notes, tips, or important information for future maintainers..."
+                  placeholder="Leave survival notes, warnings, or important intel for future rescuers..."
                   value={ghostLog}
                   onChange={(e) => setGhostLog(e.target.value)}
                   className="bg-ghost-darker border-ghost-border font-mono text-primary min-h-[120px]"
@@ -134,7 +136,7 @@ const GhostSubmission = () => {
               
               <Button 
                 type="submit" 
-                variant="terminal" 
+                variant="haunt" 
                 size="xl" 
                 className="w-full font-mono"
                 disabled={isLoading}
@@ -142,10 +144,10 @@ const GhostSubmission = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    SCANNING_DIGITAL_REMAINS...
+                    OPENING_THE_GATE...
                   </>
                 ) : (
-                  'GHOST_PROJECT'
+                  'ENTER THE VOID'
                 )}
               </Button>
             </form>

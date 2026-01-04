@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,58 +7,71 @@
 
 @layer base {
   :root {
-    /* Ghost Project Dark Theme */
-    --background: 210 14% 5%;
-    --foreground: 120 100% 50%;
+    /* Stranger Things Dark Theme */
+    --background: 0 0% 4%;
+    --foreground: 0 85% 60%;
     
-    --card: 210 14% 7%;
-    --card-foreground: 120 100% 50%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 85% 60%;
     
-    --popover: 210 14% 7%;
-    --popover-foreground: 120 100% 50%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 85% 60%;
     
-    --primary: 120 100% 50%;
-    --primary-foreground: 210 14% 5%;
+    --primary: 0 85% 52%;
+    --primary-foreground: 0 0% 4%;
     
-    --secondary: 210 14% 12%;
-    --secondary-foreground: 120 100% 50%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 85% 60%;
     
-    --muted: 210 14% 15%;
-    --muted-foreground: 120 30% 60%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 30% 55%;
     
-    --accent: 120 100% 50%;
-    --accent-foreground: 210 14% 5%;
+    --accent: 0 85% 52%;
+    --accent-foreground: 0 0% 4%;
     
-    --destructive: 0 80% 50%;
+    --destructive: 0 100% 45%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 120 100% 50%;
-    --input: 210 14% 15%;
-    --ring: 120 100% 50%;
+    --success: 120 60% 40%;
+    
+    --border: 0 70% 40%;
+    --input: 0 0% 12%;
+    --ring: 0 85% 52%;
     
     --radius: 0.25rem;
     
-    /* Custom Ghost Theme Variables */
-    --ghost-green: 120 100% 50%;
-    --ghost-green-dim: 120 60% 30%;
-    --ghost-dark: 210 14% 5%;
-    --ghost-darker: 210 14% 3%;
-    --ghost-surface: 210 14% 8%;
-    --ghost-border: 120 100% 25%;
+    /* Custom Stranger Things Theme Variables */
+    --stranger-red: 0 85% 52%;
+    --stranger-red-dim: 0 60% 30%;
+    --stranger-dark: 0 0% 4%;
+    --stranger-darker: 0 0% 2%;
+    --stranger-surface: 0 0% 8%;
+    --stranger-border: 0 70% 30%;
     
-    /* Glow effects */
-    --glow-primary: 0 0 20px hsl(120 100% 50% / 0.5);
-    --glow-strong: 0 0 40px hsl(120 100% 50% / 0.3), 0 0 80px hsl(120 100% 50% / 0.1);
+    /* Blue accent for Eleven's powers */
+    --eleven-blue: 220 100% 60%;
+    
+    /* Glow effects - neon red */
+    --glow-primary: 0 0 20px hsl(0 85% 52% / 0.5);
+    --glow-strong: 0 0 40px hsl(0 85% 52% / 0.4), 0 0 80px hsl(0 85% 52% / 0.2);
     
     /* Sidebar */
-    --sidebar-background: 210 14% 5%;
-    --sidebar-foreground: 120 100% 50%;
-    --sidebar-primary: 120 100% 50%;
-    --sidebar-primary-foreground: 210 14% 5%;
-    --sidebar-accent: 210 14% 10%;
-    --sidebar-accent-foreground: 120 100% 50%;
-    --sidebar-border: 120 100% 25%;
-    --sidebar-ring: 120 100% 50%;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 85% 60%;
+    --sidebar-primary: 0 85% 52%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 85% 60%;
+    --sidebar-border: 0 70% 30%;
+    --sidebar-ring: 0 85% 52%;
+
+    /* Ghost theme aliases for backwards compatibility */
+    --ghost-green: 0 85% 52%;
+    --ghost-green-dim: 0 60% 30%;
+    --ghost-dark: 0 0% 4%;
+    --ghost-darker: 0 0% 2%;
+    --ghost-surface: 0 0% 8%;
+    --ghost-border: 0 70% 30%;
   }
 }
 
@@ -69,6 +83,10 @@
   body {
     @apply bg-background text-foreground font-mono;
     font-family: 'JetBrains Mono', monospace;
+  }
+
+  h1, h2 {
+    font-family: 'Special Elite', cursive;
   }
   
   /* Scrollbar styling */
@@ -101,7 +119,7 @@
     box-shadow: var(--glow-strong);
   }
   
-  /* Scanline effect */
+  /* VHS Scanline effect */
   .scanlines::before {
     content: '';
     position: absolute;
@@ -113,18 +131,113 @@
       0deg,
       transparent,
       transparent 2px,
-      hsl(120 100% 50% / 0.03) 2px,
-      hsl(120 100% 50% / 0.03) 4px
+      hsl(0 85% 52% / 0.02) 2px,
+      hsl(0 85% 52% / 0.02) 4px
     );
     pointer-events: none;
     z-index: 10;
   }
+
+  /* VHS overlay effect */
+  .vhs-overlay::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(0, 0, 0, 0.1) 1px,
+        rgba(0, 0, 0, 0.1) 2px
+      );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+  }
   
-  /* Glowing text */
+  /* Glowing text - neon red */
   .glow-text {
-    text-shadow: 0 0 10px hsl(120 100% 50% / 0.8),
-                 0 0 20px hsl(120 100% 50% / 0.6),
-                 0 0 30px hsl(120 100% 50% / 0.4);
+    text-shadow: 0 0 10px hsl(0 85% 52% / 0.8),
+                 0 0 20px hsl(0 85% 52% / 0.6),
+                 0 0 30px hsl(0 85% 52% / 0.4),
+                 0 0 40px hsl(0 85% 52% / 0.2);
+  }
+
+  /* Flickering light effect for titles */
+  .flicker-text {
+    animation: text-flicker 3s ease-in-out infinite;
+  }
+
+  @keyframes text-flicker {
+    0%, 100% { 
+      opacity: 1;
+      text-shadow: 0 0 10px hsl(0 85% 52% / 0.8),
+                   0 0 20px hsl(0 85% 52% / 0.6),
+                   0 0 40px hsl(0 85% 52% / 0.4);
+    }
+    8%, 12% { 
+      opacity: 0.8;
+      text-shadow: 0 0 5px hsl(0 85% 52% / 0.5);
+    }
+    10% { 
+      opacity: 0.4;
+      text-shadow: none;
+    }
+    50% { 
+      opacity: 1;
+      text-shadow: 0 0 10px hsl(0 85% 52% / 0.8),
+                   0 0 20px hsl(0 85% 52% / 0.6),
+                   0 0 40px hsl(0 85% 52% / 0.4);
+    }
+    52%, 54% { 
+      opacity: 0.9;
+      text-shadow: 0 0 8px hsl(0 85% 52% / 0.6);
+    }
+    53% { 
+      opacity: 0.6;
+      text-shadow: 0 0 3px hsl(0 85% 52% / 0.3);
+    }
+  }
+
+  /* Christmas lights flicker (individual letters) */
+  .christmas-lights span {
+    animation: light-flicker 2s ease-in-out infinite;
+  }
+
+  .christmas-lights span:nth-child(1) { animation-delay: 0s; color: hsl(0 85% 52%); }
+  .christmas-lights span:nth-child(2) { animation-delay: 0.15s; color: hsl(45 100% 50%); }
+  .christmas-lights span:nth-child(3) { animation-delay: 0.3s; color: hsl(120 60% 50%); }
+  .christmas-lights span:nth-child(4) { animation-delay: 0.45s; color: hsl(220 100% 60%); }
+  .christmas-lights span:nth-child(5) { animation-delay: 0.6s; color: hsl(0 85% 52%); }
+  .christmas-lights span:nth-child(6) { animation-delay: 0.75s; color: hsl(280 80% 60%); }
+  .christmas-lights span:nth-child(7) { animation-delay: 0.9s; color: hsl(45 100% 50%); }
+  .christmas-lights span:nth-child(8) { animation-delay: 1.05s; color: hsl(120 60% 50%); }
+  .christmas-lights span:nth-child(9) { animation-delay: 1.2s; color: hsl(220 100% 60%); }
+  .christmas-lights span:nth-child(10) { animation-delay: 1.35s; color: hsl(0 85% 52%); }
+  .christmas-lights span:nth-child(11) { animation-delay: 1.5s; color: hsl(280 80% 60%); }
+  .christmas-lights span:nth-child(12) { animation-delay: 1.65s; color: hsl(45 100% 50%); }
+
+  @keyframes light-flicker {
+    0%, 100% { 
+      opacity: 1;
+      text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    }
+    50% { 
+      opacity: 0.7;
+      text-shadow: 0 0 5px currentColor;
+    }
+    52% { 
+      opacity: 0.3;
+      text-shadow: none;
+    }
+    54% { 
+      opacity: 0.9;
+      text-shadow: 0 0 8px currentColor;
+    }
   }
   
   /* Pulse animation */
@@ -134,10 +247,10 @@
   
   @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0 0 5px hsl(120 100% 50% / 0.5);
+      box-shadow: 0 0 5px hsl(0 85% 52% / 0.5);
     }
     50% {
-      box-shadow: 0 0 20px hsl(120 100% 50% / 0.8), 0 0 40px hsl(120 100% 50% / 0.4);
+      box-shadow: 0 0 20px hsl(0 85% 52% / 0.8), 0 0 40px hsl(0 85% 52% / 0.4);
     }
   }
   
@@ -152,16 +265,33 @@
     50% { opacity: 0; }
   }
   
-  /* Matrix rain effect background */
-  .matrix-bg {
+  /* 80s grid background */
+  .retro-grid-bg {
     background: 
-      linear-gradient(180deg, hsl(var(--ghost-dark)) 0%, transparent 100%),
+      linear-gradient(180deg, hsl(var(--stranger-dark)) 0%, transparent 100%),
       repeating-linear-gradient(
         90deg,
-        hsl(120 100% 50% / 0.03) 0px,
+        hsl(0 85% 52% / 0.03) 0px,
         transparent 1px,
-        transparent 30px
+        transparent 40px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        hsl(0 85% 52% / 0.03) 0px,
+        transparent 1px,
+        transparent 40px
       );
+  }
+
+  /* Upside Down mode */
+  .upside-down-mode {
+    transform: rotate(180deg);
+    filter: grayscale(100%) contrast(150%);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .upside-down-mode .ash-particle {
+    filter: invert(1);
   }
   
   /* Health bar glow based on score */
@@ -179,8 +309,8 @@
     @apply border-l-2 border-dashed border-ghost-border;
   }
   
-  /* Ghost badge */
-  .ghost-badge {
+  /* Stranger badge */
+  .stranger-badge {
     @apply px-2 py-0.5 text-xs font-medium rounded-sm border;
   }
   
@@ -194,14 +324,44 @@
     box-shadow: var(--glow-primary);
   }
   
-  /* Floating particles */
+  /* Floating ash particles (Upside Down) */
+  .ash-particle {
+    position: absolute;
+    background: radial-gradient(circle, hsl(0 0% 60% / 0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: ash-float 12s ease-in-out infinite;
+    opacity: 0.4;
+  }
+
+  @keyframes ash-float {
+    0%, 100% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateY(-30vh) translateX(30px) rotate(180deg);
+      opacity: 0.3;
+    }
+    90% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: translateY(-100vh) translateX(-20px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Ghost particle (keeping for compatibility but restyled as ash) */
   .ghost-particle {
     position: absolute;
     width: 4px;
     height: 4px;
-    background: hsl(var(--primary));
+    background: hsl(0 0% 60% / 0.5);
     border-radius: 50%;
-    animation: float-up 8s ease-in-out infinite;
+    animation: float-up 10s ease-in-out infinite;
     opacity: 0.3;
   }
   
@@ -233,6 +393,20 @@
     from { width: 0; }
     to { width: 100%; }
   }
+
+  /* Eleven's power effect */
+  .telekinesis-glow {
+    animation: telekinesis 2s ease-in-out infinite;
+  }
+
+  @keyframes telekinesis {
+    0%, 100% {
+      box-shadow: 0 0 5px hsl(220 100% 60% / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px hsl(220 100% 60% / 0.6), 0 0 40px hsl(220 100% 60% / 0.3);
+    }
+  }
 }
 
 @layer utilities {
@@ -258,5 +432,17 @@
   
   .bg-ghost-green-dim {
     background-color: hsl(var(--ghost-green-dim));
+  }
+
+  .font-stranger {
+    font-family: 'Special Elite', cursive;
+  }
+
+  .text-stranger-red {
+    color: hsl(var(--stranger-red));
+  }
+
+  .neon-drop-shadow {
+    filter: drop-shadow(0 0 10px hsl(0 85% 52% / 0.8));
   }
 }

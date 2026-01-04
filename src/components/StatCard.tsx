@@ -27,7 +27,7 @@ export function StatCard({ icon: Icon, label, value, subtext }: StatCardProps) {
             )}
           </div>
           <div className="relative">
-            <Icon className="h-8 w-8 text-ghost-green-dim group-hover:text-primary transition-colors" />
+            <Icon className="h-8 w-8 text-ghost-green-dim group-hover:text-primary transition-colors neon-drop-shadow" />
             <div className="absolute inset-0 blur-lg bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>
